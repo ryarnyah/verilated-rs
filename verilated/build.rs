@@ -53,6 +53,9 @@ fn main() {
                 .flag("-Wno-unused-parameter")
                 .flag("-Wno-unused-variable")
                 .flag("-Wno-shadow");
+            if target.ends_with("-darwin") {
+                cfg.flag("-mmacosx-version-min=11.0.0");
+            }
         }
         if tool.is_like_gnu() {
             cfg.flag("-std=gnu++17")

@@ -154,7 +154,9 @@ impl Verilator {
             .arg("--top-module")
             .arg(top_module)
             .arg("--lib-create")
-            .arg(lib_name.clone());
+            .arg(lib_name.clone())
+            .arg("-CFLAGS")
+            .arg("-DVL_TIME_CONTEXT");
 
         if self.coverage {
             cmd.arg("--coverage");
@@ -201,6 +203,7 @@ impl Verilator {
         run(&mut cmd, "verilator");
 
         Command::new("make")
+            .env("MACOSX_DEPLOYMENT_TARGET", "11.0.0")
             .current_dir(dst.clone())
             .args(["-f", &format!("V{}.mk", top_module)])
             .spawn()

@@ -197,6 +197,7 @@ mod ffi {{
         t!(writeln!(
             cpp_out,
             r#"#include <V{c_ty}.h>
+#include "verilated_vcd_c.h"
 
 extern "C" {{
   // CONSTRUCTORS
