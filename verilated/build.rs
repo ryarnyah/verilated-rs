@@ -28,11 +28,7 @@ fn main() {
 
         let include = root.join("include");
 
-        let mut target = getenv_unwrap("TARGET");
-        if target.ends_with("-darwin") {
-            target = target + "11";
-        }
-
+        let target = getenv_unwrap("TARGET");
         let files = vec![
             "verilated.cpp",
             "verilated_cov.cpp",
