@@ -23,6 +23,10 @@ pub struct Verilator {
     trace: bool,
     optimized: bool,
     suppress_warnings: Vec<String>,
+    threads: u32,
+    x_initial: String,
+    x_assign: String,
+    no_assert: bool,
 }
 
 impl Verilator {
@@ -104,6 +108,26 @@ impl Verilator {
         self
     }
 
+    pub fn with_threads(&mut self, t: u32) -> &mut Verilator {
+        self.threads = t;
+        self
+    }
+
+    pub fn with_x_initial(&mut self, t: String) -> &mut Verilator {
+        self.x_initial = t;
+        self
+    }
+
+    pub fn with_x_assign(&mut self, t: String) -> &mut Verilator {
+        self.x_assign = t;
+        self
+    }
+
+    pub fn with_no_assert(&mut self, t: bool) -> &mut Verilator {
+        self.no_assert = t;
+        self
+    }
+
     pub fn with_performance_optimizations(&mut self, t: bool) -> &mut Verilator {
         self.optimized = t;
         self
@@ -156,7 +180,11 @@ impl Verilator {
             .arg("--lib-create")
             .arg(lib_name.clone())
             .arg("-CFLAGS")
-            .arg("-DVL_TIME_CONTEXT");
+            .arg("-DVL_TIME_CONTEXT")
+            .arg("--x-initial")
+            .arg(self.x_initial.clone())
+            .arg("--x-assign")
+            .arg(self.x_assign.clone());
 
         if self.coverage {
             cmd.arg("--coverage");
@@ -168,6 +196,14 @@ impl Verilator {
 
         if self.optimized {
             cmd.arg("-O3");
+        }
+
+        if self.no_assert {
+            cmd.arg("--no-assert");
+        }
+
+        if self.threads > 0 {
+            cmd.arg("--threads").arg(self.threads.to_string());
         }
 
         for warn in &self.suppress_warnings {
@@ -246,6 +282,10 @@ impl Default for Verilator {
             trace: false,
             optimized: false,
             suppress_warnings: Vec::new(),
+            threads: 0,
+            x_initial: "unique".to_string(),
+            x_assign: "fast".to_string(),
+            no_assert: false,
         }
     }
 }
